@@ -143,7 +143,7 @@ def _run_locked(cfg, run_d, db, state_path, summary,
     summary["links"] = payload["links"]
 
     # ⑧ 推送
-    ok = push.send(payload, cfg, run_d=run_d)
+    ok = push.send(payload["body"], cfg, run_d=run_d)
     _log(f"PUSH {'ok' if ok else 'FAILED'} channel={cfg.get('push', {}).get('channel')}")
 
     # ⑨ 写 push_log + 计数（只记真实推送的）
