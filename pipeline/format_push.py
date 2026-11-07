@@ -40,9 +40,15 @@ def _condense(r: dict, link: str) -> str:
     head = f"【{risk}】{verdict}" + (f" - {summary}" if summary else "")
     body = (f"主机 {p.get('host', '?')}({p.get('ip', '?')}) "
             f"用户 {p.get('用户', '?')} 规则 {p.get('规则', '?')}")
+    # 触发命令单行截断展示：值班第一眼要知道"到底执行了什么"
+    cmd = " ".join(str(r["alert"].get("command", "")).split())
+    if cmd:
+        cmd = cmd[:80] + ("…" if len(cmd) > 80 else "")
+    out = [head, body]
+    if cmd:
+        out.append(f"命令: {cmd}")
     hist = p.get("history_note", "")
     advice = str(p.get("处置建议", ""))[:80]
-    out = [head, body]
     if hist:
         out.append(f"历史: {hist}")
     if advice:
