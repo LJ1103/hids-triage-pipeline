@@ -1,0 +1,9 @@
+# 管道与工具（不含 Agent 核心——AI 研判由 Hermes Agent 承担）
+PyYAML>=6.0
+requests>=2.31.0
+fastapi>=0.115.0
+uvicorn>=0.30.0
+pytest>=8.0
+
+# MCP server（把研判工具挂给 Hermes；仅生产路径需要，测试不需要）
+mcp>=1.2.0

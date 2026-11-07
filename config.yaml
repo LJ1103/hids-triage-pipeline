@@ -1,0 +1,50 @@
+# =====================================================================
+# HIDS 告警智能分诊流水线 - 全局配置
+# 设计原则：cron 每 3 分钟拉起一次 runner.py，一级门控(纯脚本、零 token)
+# 拦掉大部分噪声后，才进入二级 AI 研判，三级冷却/推送/留痕。
+# =====================================================================
+
+run:
+  data_dir: "run"            # 运行时产物目录（_latest_alerts.json / push_log.db / 报告等）
+
+# ---------- ① 告警源 ----------
+fetch:
+  # 告警源文件：默认由 simulator.py 生成，对接真实青藤 HIDS 时
+  # 只需把 fetch.fetch_alerts() 换成调用其 OpenAPI 并保持同样的规范化输出
+  source_file: "run/alerts_source.json"
+
+# ---------- ② 一级门控（no_agent，零 token） ----------
+precheck:
+  dedup_hours: 12            # 同 (IP + 命令前200字符 + 告警类型) 三元组 12h 内只推一次
+  whitelist:
+    users: ["zabbix", "backup_svc", "monitor_agent"]   # 命中告警用户 → 直接跳过
+    rules: ["定时任务变更-官方备份脚本"]                   # 命中规则名 → 直接跳过
+    ips: []                                              # 命中资产 IP → 直接跳过
+  log_retention_days: 30     # push_log 老数据自动清理
+
+# ---------- ③④ 二级 AI 研判（Hermes Agent，不自研 Agent 核心） ----------
+hermes:
+  model: ""                  # 留空 = 用 Hermes 自身配置里的默认模型
+  source_dir: ""             # hermes-agent 源码 checkout 路径（或设环境变量 HERMES_DIR）
+  max_iterations: 12         # 单条告警最大工具调用轮数（控成本，防失控）
+  per_alert_budget_s: 60     # 单条告警研判时间预算
+
+# ---------- ⑤ 冷却（同 用户+主机+规则） ----------
+cooldown:
+  threshold: 5               # 低/中危连续推送 N 次后进入静默
+  silence_minutes: 60        # 静默 1 小时
+  reset_window_hours: 2      # 超过 2h 未再出现则重置计数
+
+# ---------- ⑥⑦⑧ 推送 ----------
+push:
+  channel: "console"         # console | file | webhook
+  file_path: "run/push_out.txt"
+  webhook_url: ""            # 企微机器人 webhook；建议留空，用环境变量 WECOM_WEBHOOK_URL 注入（密钥不入库）
+
+# ---------- 详情页服务（server/alert_server.py） ----------
+server:
+  host: "127.0.0.1"
+  port: 8080
+  # 注意走 http 而非 https：企微内置浏览器不信任自签证书
+  public_base: "http://127.0.0.1:8080"
+  detail_ttl_hours: 24       # 详情页链接 24h 有效

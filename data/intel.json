@@ -1,0 +1,5 @@
+{
+  "198.51.100.23": {"malicious": true, "confidence": 0.95, "source": "内部威胁情报平台", "tags": ["Cobalt Strike C2", "僵尸网络"]},
+  "203.0.113.9": {"malicious": true, "confidence": 0.88, "source": "内部威胁情报平台", "tags": ["挖矿木马回连"]},
+  "45.33.32.156": {"malicious": true, "confidence": 0.91, "source": "社区威胁情报", "tags": ["恶意扫描源", "爆破源"]}
+}

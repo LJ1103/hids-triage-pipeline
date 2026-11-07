@@ -1,0 +1,7 @@
+{
+  "10.20.30.43": {"hostname": "web-prod-03", "owner": "张伟", "department": "电商研发部", "env": "生产", "role": "Web 前端服务器", "business": "商城主站"},
+  "10.20.30.51": {"hostname": "db-prod-01", "owner": "李娜", "department": "数据平台部", "env": "生产", "role": "MySQL 主库", "business": "订单库"},
+  "10.20.31.12": {"hostname": "app-test-07", "owner": "王强", "department": "风控研发部", "env": "测试", "role": "应用服务器", "business": "风控测试环境"},
+  "10.20.31.30": {"hostname": "bigdata-04", "owner": "赵敏", "department": "大数据部", "env": "生产", "role": "计算节点", "business": "离线数仓"},
+  "192.168.8.15": {"hostname": "jump-ops-01", "owner": "陈晨", "department": "运维部", "env": "生产", "role": "跳板机", "business": "内部运维入口"}
+}

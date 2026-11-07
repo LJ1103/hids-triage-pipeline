@@ -1,0 +1,6 @@
+[
+  {"user": "liuyf", "ip": "10.20.30.43", "login_time": "2026-11-06 09:12:35", "source_ip": "192.168.1.34", "method": "SSH", "mfa": true, "session_id": "BS-20261106-0093", "duration_min": 42},
+  {"user": "zhangwei", "ip": "10.20.30.51", "login_time": "2026-11-06 08:40:11", "source_ip": "192.168.1.77", "method": "SSH", "mfa": true, "session_id": "BS-20261106-0081", "duration_min": 15},
+  {"user": "wangqiang", "ip": "10.20.31.12", "login_time": "2026-11-06 10:02:58", "source_ip": "172.16.4.20", "method": "SSH", "mfa": false, "session_id": "BS-20261106-0102", "duration_min": 8},
+  {"user": "zhaomin", "ip": "10.20.31.30", "login_time": "2026-11-05 22:15:00", "source_ip": "192.168.1.90", "method": "SSH", "mfa": true, "session_id": "BS-20261105-2350", "duration_min": 120}
+]
