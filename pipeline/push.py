@@ -13,8 +13,14 @@ from pathlib import Path
 import common
 
 
-def send(body: str, cfg: dict, run_d: Path | None = None) -> bool:
-    """推送正文。返回是否成功（失败由 runner 记录，不影响⑨写库——留痕优先）。"""
+def send(payload, cfg: dict, run_d: Path | None = None) -> bool:
+    """推送负载。payload 为 format_push.build_push 的返回（含 body/cards 等）。
+
+    企微 webhook 优先用 news（图文卡片）——整卡可点击直接打开详情页；
+    无卡片数据时回退 markdown 纯文本。失败由 runner 记录，不影响⑨写库（留痕优先）。
+    """
+    body = payload.get("body", "")
+    cards = payload.get("cards") or []
     pc = cfg.get("push", {})
     channel = os.getenv("PUSH_CHANNEL") or pc.get("channel", "console")
 
@@ -44,9 +50,18 @@ def send(body: str, cfg: dict, run_d: Path | None = None) -> bool:
             return False
         try:
             import requests
-            # 企微机器人 markdown 消息格式
-            resp = requests.post(url, json={"msgtype": "markdown",
-                                            "markdown": {"content": body}}, timeout=10)
+            # 有卡片 → news（图文卡片，整卡可点击直接打开详情页）
+            if cards:
+                articles = [
+                    {"title": c["title"], "description": c.get("description", ""),
+                     "url": c["url"]} for c in cards
+                ]
+                resp = requests.post(url, json={"msgtype": "news",
+                                                "news": {"articles": articles}}, timeout=10)
+            else:
+                # 无卡片（如 fallback 组装失败）→ 退化为 markdown 纯文本
+                resp = requests.post(url, json={"msgtype": "markdown",
+                                                "markdown": {"content": body}}, timeout=10)
             ok = resp.status_code == 200 and resp.json().get("errcode") == 0
             if not ok:
                 print(f"[push] 企微返回异常: {resp.status_code} {resp.text[:200]}")

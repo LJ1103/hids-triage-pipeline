@@ -60,7 +60,7 @@ def _condense(r: dict, link: str) -> str:
 def build_push(results: list[dict], cfg: dict, run_d: Optional[Path] = None) -> dict:
     """⑦ 组装推送负载：详情页数据落盘 + 精简正文（失败回退完整版）。
 
-    返回 {"body": str, "links": [str], "detail_files": [Path], "fallback": bool}
+    返回 {"body": str, "links": [str], "cards": [dict], "detail_files": [Path], "fallback": bool}
     """
     run_d = run_d or common.run_dir(cfg)
     reports_d = run_d / "reports"
@@ -68,7 +68,7 @@ def build_push(results: list[dict], cfg: dict, run_d: Optional[Path] = None) -> 
     sc = cfg.get("server", {})
     base = sc.get("public_base", "http://127.0.0.1:8080").rstrip("/")
 
-    links, files, blocks = [], [], []
+    links, files, blocks, cards = [], [], [], []
     try:
         now_ts = common.now_ts()
         for r in results:
@@ -87,7 +87,12 @@ def build_push(results: list[dict], cfg: dict, run_d: Optional[Path] = None) -> 
             files.append(f)
             link = f"{base}/alert/{rid}"
             links.append(link)
-            blocks.append(_condense(r, link))
+            block = _condense(r, link)
+            blocks.append(block)
+            # 可点击卡片：标题取首行，正文去掉"详情"链接行（url 承担跳转）
+            lines = block.split("\n")
+            desc = "\n".join(lines[1:-1]) if len(lines) > 2 else ""
+            cards.append({"title": lines[0], "description": desc, "url": link})
         header = f"🔔 HIDS 告警研判（{len(results)} 条待处置）"
         body = header + "\n\n" + "\n\n".join(blocks)
         fallback_used = False
@@ -96,4 +101,5 @@ def build_push(results: list[dict], cfg: dict, run_d: Optional[Path] = None) -> 
         body = "\n\n---\n\n".join(r["report_text"] for r in results)
         fallback_used = True
 
-    return {"body": body, "links": links, "detail_files": files, "fallback": fallback_used}
+    return {"body": body, "links": links, "cards": cards,
+            "detail_files": files, "fallback": fallback_used}
