@@ -75,6 +75,18 @@ python -m server.alert_server
 | `whitelist` | `--scenario whitelist` | 监控/备份账号 → 一级门控直接拦截 |
 | `clean` | `--scenario clean` | 无告警 → 静默退出零开销 |
 
+### 实际运行效果
+
+以下截图来自 Linux 服务器实际运行（`--fallback` 确定性引擎）：企微群收到的推送卡片，以及点开详情页后的完整研判（底部链接已打码）。
+
+**企微推送**（含风险等级、触发命令、历史推送、处置建议、详情链接）：
+
+![企微推送](docs/screenshots/01-wecom-push.png)
+
+**详情页**（含原始告警字段、研判结论、堡垒机与资产负责人依据）：
+
+![详情页](docs/screenshots/02-detail-page.png)
+
 ## 接入 Hermes（真实 AI 研判）
 
 降级模式只用于离线演示/CI。生产路径使用 [Hermes Agent](https://hermes-agent.nousresearch.com/docs/)（Nous Research 开源）：
@@ -136,6 +148,7 @@ python -m pytest tests -q    # 27 个用例，全离线：门控/冷却/注入�
 ├── tools/                  # 堡垒机 / 资产 / 情报 / 历史（mock 数据实现）
 ├── server/alert_server.py  # 详情页服务 :8080/alert/{id}（24h 有效）
 ├── data/                   # mock 数据：资产台账、堡垒机日志、情报、历史种子
+├── docs/screenshots/       # 实际运行效果截图（企微推送 / 详情页）
 ├── tests/                  # 离线单测 + 端到端
 └── run/                    # 运行时产物（gitignore）：告警缓存/push_log.db/报告/留痕
 ```

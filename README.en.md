@@ -75,6 +75,18 @@ Run `python runner.py --fallback` again (without regenerating alerts) → 12h de
 | `whitelist` | `--scenario whitelist` | Monitoring/backup accounts → blocked outright by stage-1 gating |
 | `clean` | `--scenario clean` | No alerts → silent exit at zero cost |
 
+### Actual output
+
+The screenshots below come from a real run on a Linux server (deterministic `--fallback` engine): the push card received in the WeCom group, and the detail page opened from it (bottom links redacted).
+
+**WeCom push** (risk level, triggering command, push history, remediation advice, detail link):
+
+![WeCom push](docs/screenshots/01-wecom-push.png)
+
+**Detail page** (raw alert fields, verdict, bastion log and asset-owner evidence):
+
+![Detail page](docs/screenshots/02-detail-page.png)
+
 ## Integrating Hermes (real AI triage)
 
 The fallback mode is for offline demos / CI only. The production path uses [Hermes Agent](https://hermes-agent.nousresearch.com/docs/) (open-sourced by Nous Research):
