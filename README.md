@@ -1,5 +1,7 @@
 # hids-triage-pipeline
 
+[English](README.en.md) | **简体中文**
+
 > HIDS 告警智能分诊流水线：**两级门控 + AI 研判**。cron 巡检 → 纯脚本去重/白名单拦掉大部分噪声（零 token）→ 存活告警交给 [Hermes Agent](https://github.com/NousResearch/hermes-agent) 查证堡垒机/资产/情报后产出结构化研判 → 冷却压制重复风暴 → 推送企业微信并留痕。
 
 ## 为什么做
